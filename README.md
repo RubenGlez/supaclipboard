@@ -56,9 +56,9 @@ const MyComponent = () => {
 export default MyComponent;
 ```
 
-## API Reference
-`useClipboard(options)`
-Initializes the clipboard hook with optional configurations.
+## API Reference
+
+- `useClipboard(options)`: Initializes the clipboard hook with optional configurations.
 
 ### Options:
 
