@@ -1,30 +1,85 @@
-# React + TypeScript + Vite
+# SupaClipboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> :warning: **Work In Progress:** This hook is currently under development and might be subject to breaking changes. Use with caution in production environments.
 
-Currently, two official plugins are available:
+A comprehensive React hook for interacting with the clipboard, providing functionalities beyond simple text copying and pasting. SupaClipboard offers advanced features like handling different data types, clipboard change listening, customizable notifications, and much more, making it a versatile tool for modern web applications.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- **Advanced Copying:** Support for copying text, HTML, and images to the clipboard.
+- **Conditional Copy:** Copy content based on custom conditions or validations.
+- **Advanced Reading:** Read and process various content types from the clipboard, including text, HTML, and images.
+- **Clipboard Change Listening:** Detect and respond to changes in the clipboard content.
+- **Clipboard History:** Maintain a session-based history of copied items for easy access and manipulation.
+- **Notifications:** Customizable notifications for successful or failed clipboard operations.
+- **Security and Privacy:** Ensures secure and privacy-compliant access to the clipboard.
+- **Cross-Browser Compatibility:** Works consistently across different browsers with fallbacks for unsupported cases.
+- **Customizable:** Offers configuration options for callbacks, history limits, and more.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Installation
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+```bash
+npm install supaclipboard
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Or using yarn:
+
+```bash
+yarn add supaclipboard
+```
+
+## Usage
+
+Here's a quick example to get you started:
+
+```jsx
+import React from "react";
+import { useClipboard } from "supaclipboard";
+
+const MyComponent = () => {
+  const { copy, paste, clipboardHistory } = useClipboard({
+    onSuccess: () => console.log("Copied successfully!"),
+    onError: () => console.log("Failed to copy."),
+  });
+
+  return (
+    <div>
+      <button onClick={() => copy("Hello World!")}>Copy to Clipboard</button>
+      <button onClick={async () => console.log(await paste())}>
+        Paste from Clipboard
+      </button>
+      <div>Clipboard History: {clipboardHistory.join(", ")}</div>
+    </div>
+  );
+};
+
+export default MyComponent;
+```
+
+## API Reference
+`useClipboard(options)`
+Initializes the clipboard hook with optional configurations.
+
+### Options:
+
+- `onSuccess`: Callback function that triggers on a successful copy.
+- `onError`: Callback function that triggers on a failed copy.
+- `historyLimit`: Limits the number of items in the clipboard history.
+
+### Returns:
+
+- `copy`: Function to copy content to the clipboard.
+- `paste`: Function to read content from the clipboard.
+- `clipboardHistory`: An array of copied items during the session.
+
+## Browser Support
+
+SupaClipboard is designed to work in most modern browsers. For older browsers, make sure to test and implement necessary polyfills.
+
+## Contributing
+
+Contributions are always welcome! Please read the contributing guide for more details on how to contribute to this project.
+
+## License
+
+SupaClipboard is MIT licensed.
