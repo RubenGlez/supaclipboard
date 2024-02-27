@@ -6,15 +6,18 @@ A comprehensive React hook for interacting with the clipboard, providing functio
 
 ## Features
 
-- **Advanced Copying:** Support for copying text, HTML, and images to the clipboard.
-- **Conditional Copy:** Copy content based on custom conditions or validations.
-- **Advanced Reading:** Read and process various content types from the clipboard, including text, HTML, and images.
-- **Clipboard Change Listening:** Detect and respond to changes in the clipboard content.
 - **Clipboard History:** Maintain a session-based history of copied items for easy access and manipulation.
 - **Notifications:** Customizable notifications for successful or failed clipboard operations.
 - **Security and Privacy:** Ensures secure and privacy-compliant access to the clipboard.
 - **Cross-Browser Compatibility:** Works consistently across different browsers with fallbacks for unsupported cases.
 - **Customizable:** Offers configuration options for callbacks, history limits, and more.
+
+## WIP Features
+
+- **Advanced Copying:** Support for copying HTML, and images to the clipboard.
+- **Conditional Copy:** Copy content based on custom conditions or validations.
+- **Advanced Reading:** Read and process various content types from the clipboard, including HTML and images.
+- **Clipboard Change Listening:** Detect and respond to changes in the clipboard content.
 
 ## Installation
 

@@ -1,38 +1,25 @@
 import { useCallback, useState } from "react";
 
 interface CopyFromClipboardProps {
-  onSuccess?: () => void;
-  onError?: () => void;
+  onCopySuccess?: () => void;
+  onCopyError?: () => void;
+  onPasteSuccess?: () => void;
+  onPasteError?: () => void;
   historyLimit?: number;
   persist?: boolean;
 }
 
-enum CopyContentType {
-  plainText = "text/plain",
-  html = "text/html",
-  image = "image/*",
-}
-
-enum PasteContentType {
-  text = "text",
-  image = "image",
-}
-
-type PasteResult =
-  | { type: "text"; content: string }
-  | { type: "image"; content: Blob };
-
 const LOCAL_STORAGE_KEY = "supaclipboardHistory";
 
 export function useClipboard({
-  onSuccess,
-  onError,
-  historyLimit = 10, // Un límite predeterminado para el historial
+  onCopySuccess,
+  onCopyError,
+  onPasteSuccess,
+  onPasteError,
+  historyLimit = 10,
   persist = false,
 }: CopyFromClipboardProps = {}) {
-  const [clipboardHistory, setClipboardHistory] = useState<
-    Array<string | Blob>
-  >(() => {
+  const [history, setHistory] = useState<string[]>(() => {
     if (persist) {
       const storedHistory = localStorage.getItem(LOCAL_STORAGE_KEY);
       return storedHistory ? JSON.parse(storedHistory) : [];
@@ -41,22 +28,16 @@ export function useClipboard({
   });
 
   const updateHistory = useCallback(
-    (content: string | Blob) => {
-      setClipboardHistory((prevHistory) => {
-        const updatedHistory = [...prevHistory, content].slice(-historyLimit);
+    (text: string) => {
+      setHistory((prevHistory) => {
+        const updatedHistory = [
+          text,
+          ...prevHistory.slice(0, historyLimit - 1),
+        ];
         if (persist) {
-          /**
-           * TODO
-           * This only works for strings.
-           * To store images or HTML we need to convert them to Base64
-           * or store a reference instead the real content
-           */
-          const historyToStore = updatedHistory.filter(
-            (item) => typeof item === "string"
-          );
           localStorage.setItem(
             LOCAL_STORAGE_KEY,
-            JSON.stringify(historyToStore)
+            JSON.stringify(updatedHistory)
           );
         }
         return updatedHistory;
@@ -66,73 +47,42 @@ export function useClipboard({
   );
 
   const copy = useCallback(
-    async (content: string | Blob): Promise<boolean> => {
+    async (text: string) => {
       if (!navigator.clipboard) {
         console.error("Clipboard API not available");
-        onError?.();
-        return false;
+        onCopyError?.();
+        return;
       }
 
       try {
-        let mimeType = CopyContentType.plainText;
-        const dataToCopy: Blob | string = content;
-
-        if (typeof content === "string") {
-          mimeType =
-            content.trim().startsWith("<") && content.trim().endsWith(">")
-              ? CopyContentType.html
-              : CopyContentType.plainText;
-        } else if (content instanceof Blob) {
-          mimeType = CopyContentType.image; // TODO: Enhancing this by checking the blob's type.
-        }
-
-        // Simplify the data structure for ClipboardItem
-        const item =
-          mimeType === CopyContentType.image
-            ? content
-            : new Blob([dataToCopy], { type: mimeType });
-        await navigator.clipboard.write([
-          new ClipboardItem({ [mimeType]: item }),
-        ]);
-
-        updateHistory(item);
-
-        onSuccess?.();
-        return true;
+        await navigator.clipboard.writeText(text);
+        updateHistory(text);
+        onCopySuccess?.();
       } catch (error) {
         console.error("Failed to copy content: ", error);
-        onError?.();
-        return false;
+        onCopyError?.();
       }
     },
-    [onError, onSuccess, updateHistory]
+    [onCopyError, onCopySuccess, updateHistory]
   );
 
-  const paste = useCallback(async (): Promise<PasteResult | null> => {
+  const paste = useCallback(async () => {
     if (!navigator.clipboard) {
       console.error("Clipboard API not available");
+      onPasteError?.();
       return null;
     }
 
     try {
-      const clipboardItems = await navigator.clipboard.read();
-      for (const clipboardItem of clipboardItems) {
-        for (const type of clipboardItem.types) {
-          const blob = await clipboardItem.getType(type);
-          if (type === CopyContentType.plainText) {
-            const text = await new Response(blob).text();
-            return { type: PasteContentType.text, content: text };
-          } else if (type.startsWith("image/")) {
-            return { type: PasteContentType.image, content: blob };
-          }
-        }
-      }
-      return null;
+      const text = await navigator.clipboard.readText();
+      onPasteSuccess?.();
+      return text;
     } catch (error) {
       console.error("Failed to paste content: ", error);
+      onPasteError?.();
       return null;
     }
-  }, []);
+  }, [onPasteError, onPasteSuccess]);
 
-  return { copy, paste, clipboardHistory };
+  return { copy, paste, history };
 }
