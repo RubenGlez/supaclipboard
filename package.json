@@ -1,11 +1,13 @@
 {
   "name": "supaclipboard",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A comprehensive React hook for seamless clipboard interactions",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["/dist"],
+  "files": [
+    "/dist"
+  ],
   "scripts": {
     "build": "tsc",
     "build:clean": "rm -rf dist && pnpm run build"
