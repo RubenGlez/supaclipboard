@@ -1,7 +1,7 @@
 import { renderHook, act } from "@testing-library/react";
-import { useClipboard } from ".";
+import { useSupaclipboard } from ".";
 
-describe("useClipboard", () => {
+describe("useSupaclipboard", () => {
   // Mocks
   beforeEach(() => {
     Object.defineProperty(global.navigator, "clipboard", {
@@ -23,7 +23,7 @@ describe("useClipboard", () => {
 
   it("calls onCopySuccess and updates history on successful copy", async () => {
     const onCopySuccess = jest.fn();
-    const { result } = renderHook(useClipboard, {
+    const { result } = renderHook(useSupaclipboard, {
       initialProps: { onCopySuccess, persist: false },
     });
 

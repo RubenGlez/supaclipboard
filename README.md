@@ -1,8 +1,8 @@
-# SupaClipboard
+# supaclipboard
 
 > :warning: **Work In Progress:** This hook is currently under development and might be subject to breaking changes. Use with caution in production environments.
 
-A comprehensive React hook for interacting with the clipboard, providing functionalities beyond simple text copying and pasting. SupaClipboard offers advanced features like handling different data types, clipboard change listening, customizable notifications, and much more, making it a versatile tool for modern web applications.
+A comprehensive React hook for interacting with the clipboard, providing functionalities beyond simple text copying and pasting. supaclipboard offers advanced features like handling different data types, clipboard change listening, customizable notifications, and much more, making it a versatile tool for modern web applications.
 
 ## Features
 
@@ -36,12 +36,12 @@ Here's a quick example to get you started:
 
 ```jsx
 import React from "react";
-import { useClipboard } from "supaclipboard";
+import { useSupaclipboard } from "supaclipboard";
 
 const MyComponent = () => {
   const inputRef = useRef < HTMLInputElement > null;
 
-  const { copy, history, paste } = useClipboard({
+  const { copy, history, paste } = useSupaclipboard({
     historyLimit: 8,
     onCopyError: () => {
       console.log("Error copying");
@@ -124,7 +124,7 @@ export default MyComponent;
 
 ## API Reference
 
-- `useClipboard(options)`: Initializes the clipboard hook with optional configurations.
+- `useSupaclipboard(options)`: Initializes the clipboard hook with optional configurations.
 
 ### Options:
 
@@ -143,7 +143,7 @@ export default MyComponent;
 
 ## Browser Support
 
-SupaClipboard is designed to work in most modern browsers. For older browsers, make sure to test and implement necessary polyfills.
+supaclipboard is designed to work in most modern browsers. For older browsers, make sure to test and implement necessary polyfills.
 
 ## Contributing
 
@@ -151,4 +151,10 @@ Contributions are always welcome! Please read the contributing guide (WIP) for m
 
 ## License
 
-SupaClipboard is MIT licensed.
+supaclipboard is MIT licensed.
+
+## Support
+
+If you need help or have any questions, please open an issue in the GitHub repository.
+
+Thank you for using supaclipboard!
