@@ -39,18 +39,82 @@ import React from "react";
 import { useClipboard } from "supaclipboard";
 
 const MyComponent = () => {
-  const { copy, paste, clipboardHistory } = useClipboard({
-    onSuccess: () => console.log("Copied successfully!"),
-    onError: () => console.log("Failed to copy."),
+  const inputRef = useRef < HTMLInputElement > null;
+
+  const { copy, history, paste } = useClipboard({
+    historyLimit: 8,
+    onCopyError: () => {
+      console.log("Error copying");
+    },
+    onCopySuccess: () => {
+      console.log("Copy successful");
+    },
+    onPasteError: () => {
+      console.log("Error pasting");
+    },
+    onPasteSuccess: () => {
+      console.log("Paste successful");
+    },
+    persist: true,
   });
 
+  const handlePaste = async () => {
+    if (!inputRef.current) return;
+    const valueFromClipboard = await paste();
+    inputRef.current.value = valueFromClipboard ?? "";
+  };
+
   return (
-    <div>
-      <button onClick={() => copy("Hello World!")}>Copy to Clipboard</button>
-      <button onClick={async () => console.log(await paste())}>
-        Paste from Clipboard
-      </button>
-      <div>Clipboard History: {clipboardHistory.join(", ")}</div>
+    <div style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
+      <div>
+        <h1>📋 supaclipboard</h1>
+      </div>
+
+      <div>
+        <h2>Copy examples</h2>
+        <ul style={{ display: "inline-flex", gap: "20px" }}>
+          <li>
+            <button onClick={() => copy("Green")}>Green</button>
+          </li>
+          <li>
+            <button onClick={() => copy("Blue")}>Blue</button>
+          </li>
+          <li>
+            <button onClick={() => copy("Orange")}>Orange</button>
+          </li>
+          <li>
+            <button onClick={() => copy("Red")}>Red</button>
+          </li>
+          <li>
+            <button onClick={() => copy("Yellow")}>Yellow</button>
+          </li>
+          <li>
+            <button onClick={() => copy("Purple")}>Purple</button>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <h2>Paste from clipboard</h2>
+        <div style={{ display: "inline-flex", gap: "20px" }}>
+          <button onClick={handlePaste}>Paste</button>
+          <input ref={inputRef} />
+        </div>
+      </div>
+
+      <div>
+        <h2>
+          History{" "}
+          <small style={{ fontSize: "12px" }}>
+            (first item is the last copied value)
+          </small>
+        </h2>
+        <ol>
+          {history.map((item, i) => (
+            <li key={`${item}_${i}`}>{item}</li>
+          ))}
+        </ol>
+      </div>
     </div>
   );
 };
