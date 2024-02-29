@@ -128,15 +128,18 @@ export default MyComponent;
 
 ### Options:
 
-- `onSuccess`: Callback function that triggers on a successful copy.
-- `onError`: Callback function that triggers on a failed copy.
+- `onCopySuccess`: Callback function that triggers on a successful copy.
+- `onCopyError`: Callback function that triggers on a failed copy.
+- `onPasteSuccess`: Callback function that triggers on a successful paste.
+- `onPasteError`: Callback function that triggers on a failed paste.
 - `historyLimit`: Limits the number of items in the clipboard history.
+- `persist`: Determines whether to persist history to local storage
 
 ### Returns:
 
 - `copy`: Function to copy content to the clipboard.
 - `paste`: Function to read content from the clipboard.
-- `clipboardHistory`: An array of copied items during the session.
+- `history`: An array of copied items during the session.
 
 ## Browser Support
 
@@ -144,7 +147,7 @@ SupaClipboard is designed to work in most modern browsers. For older browsers, m
 
 ## Contributing
 
-Contributions are always welcome! Please read the contributing guide for more details on how to contribute to this project.
+Contributions are always welcome! Please read the contributing guide (WIP) for more details on how to contribute to this project.
 
 ## License
 
