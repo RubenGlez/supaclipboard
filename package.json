@@ -1,6 +1,6 @@
 {
   "name": "supaclipboard",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "A comprehensive React hook for seamless clipboard interactions",
   "type": "module",
   "main": "dist/index.js",
