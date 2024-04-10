@@ -2,7 +2,7 @@
 
 # supaclipboard
 
-A React hook for effortlessly handling clipboard operations (copy and paste) with additional features like operation callbacks, clipboard history management, and optional persistence of the clipboard history using local storage.
+A React hook for effortlessly handling clipboard operations (copy and paste) with additional features like operation callbacks, clipboard history management, optional persistence of the clipboard history using local storage, and global clipboard event listeners.
 
 ## Features
 
@@ -11,12 +11,16 @@ A React hook for effortlessly handling clipboard operations (copy and paste) wit
 - **Customizable:** Offers configuration options for callbacks, history limits, and more.
 - **Security and Privacy:** Ensures secure and privacy-compliant access to the clipboard.
 - **Cross-Browser Compatibility:** Works consistently across different browsers with fallbacks for unsupported cases.
+- **Clipboard Event Listeners:** Implement hooks that listen to clipboard events (copy, cut, and paste) globally within the app, allowing for automated reactions to these events. The `useSupaclipboardGlobalListener` hook provides an easy way to subscribe to these global events and perform custom actions.
 
 ## Installation
 
 ```bash
 # npm
 npm install supaclipboard
+
+# pnpm
+pnpm add supaclipboard
 
 # yarn:
 yarn add supaclipboard
@@ -28,7 +32,7 @@ Here's a quick example to get you started:
 
 ```jsx
 import React from "react";
-import { useSupaclipboard } from "supaclipboard";
+import { useSupaclipboard, useSupaclipboardGlobalListener } from "supaclipboard";
 
 const MyComponent = () => {
   const inputRef = useRef < HTMLInputElement > null;
@@ -111,14 +115,33 @@ const MyComponent = () => {
   );
 };
 
-export default MyComponent;
+const App() {
+  // Using the global listener hook
+  useSupaclipboardGlobalListener({
+    onCopy: (event) => {
+      console.log("Copied text: ", event.clipboardData.getData("text"));
+    },
+    onCut: (event) => {
+      console.log("Cut text: ", event.clipboardData.getData("text"));
+    },
+    onPaste: (event) => {
+      console.log("Paste event triggered");
+    },
+  });
+
+  return (
+    <MyComponent />
+  )
+}
 ```
 
 ## API Reference
 
-- `useSupaclipboard(options)`: Initializes the clipboard hook with optional configurations.
+### `useSupaclipboard(options)`
 
-### Options:
+Initializes the clipboard hook with optional configurations.
+
+#### Options:
 
 - `onCopySuccess`: Callback function that triggers on a successful copy.
 - `onCopyError`: Callback function that triggers on a failed copy.
@@ -127,11 +150,24 @@ export default MyComponent;
 - `historyLimit`: Limits the number of items in the clipboard history.
 - `persist`: Determines whether to persist history to local storage
 
-### Returns:
+#### Returns:
 
 - `copy`: Function to copy content to the clipboard.
 - `paste`: Function to read content from the clipboard.
 - `history`: An array of copied items during the session.
+
+### `useSupaclipboardGlobalListener(options?: UseSupaclipboardGlobalListenerProps)`
+
+A React hook designed for setting up global listeners for clipboard events within your application. This hook simplifies the process of reacting to copy, cut, and paste events, allowing you to perform custom actions based on these events.
+
+#### Parameters:
+
+- `options`: An optional object containing callbacks for the clipboard events.
+  - `onCopy`: A callback function that is invoked when a copy event occurs. It receives the native `ClipboardEvent` as its parameter.
+  - `onCut`: A callback function that is triggered when a cut event occurs. It also receives the native `ClipboardEvent` as its parameter.
+  - `onPaste`: A callback function that is called when a paste event takes place. This function is provided with the native `ClipboardEvent` as its argument.
+
+Each callback is optional, so you can choose to listen to only the events you are interested in.
 
 ## Support & Contributing
 
@@ -148,8 +184,6 @@ Thank you for using and supporting supaclipboard!
 1. **Multi-Format Clipboard Support**: Extend functionality to support not just text, but images, HTML, and custom data types, offering a more versatile clipboard interaction experience.
 
 2. **History Management Features**: Introduce capabilities to edit, remove, or even tag specific items within the clipboard history. This would allow users to manage their clipboard history more effectively.
-
-3. **Clipboard Event Listeners**: Implement hooks that listen to clipboard events (copy, cut, and paste) globally within the app, allowing for automated reactions to these events.
 
 ### Mid-term Enhancements
 

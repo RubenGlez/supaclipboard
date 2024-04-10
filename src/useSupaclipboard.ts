@@ -1,4 +1,5 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { EventName, eventBus } from "./EventBus";
 
 interface UseSupaClipboardProps {
   onCopySuccess?: () => void;
@@ -7,17 +8,10 @@ interface UseSupaClipboardProps {
   onPasteError?: () => void;
   historyLimit?: number;
   persist?: boolean;
+  listenGlobalClipboardEvents?: boolean;
 }
 
 const LOCAL_STORAGE_KEY = "supaclipboardHistory";
-
-/**
- *
- * You can check if you have permission to access the clipboard using the Permissions API:
- * await navigator.permissions.query({ name: 'clipboard-read' });
- * or 'clipboard-write' for permission to write
- * sample result: {state: 'granted'}
- */
 
 export function useSupaclipboard({
   onCopySuccess,
@@ -26,6 +20,7 @@ export function useSupaclipboard({
   onPasteError,
   historyLimit = 10,
   persist = false,
+  listenGlobalClipboardEvents = false,
 }: UseSupaClipboardProps = {}) {
   const [history, setHistory] = useState<string[]>(() => {
     if (persist) {
@@ -91,6 +86,19 @@ export function useSupaclipboard({
       return null;
     }
   }, [onPasteError, onPasteSuccess]);
+
+  useEffect(() => {
+    if (listenGlobalClipboardEvents) {
+      const unsubscribeCopy = eventBus.subscribe(EventName.copy, updateHistory);
+
+      const unsubscribeCut = eventBus.subscribe(EventName.cut, updateHistory);
+
+      return () => {
+        unsubscribeCopy();
+        unsubscribeCut();
+      };
+    }
+  }, [listenGlobalClipboardEvents, updateHistory]);
 
   return { copy, paste, history };
 }
